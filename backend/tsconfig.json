@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "ESNext"
+        ], // Keep "ESNext" for async/await support
+        "target": "ESNext", // Target latest JavaScript
+        "module": "CommonJS", // Use CommonJS for backend (Node.js compatibility)
+        "moduleResolution": "node", // Use "node" resolution for backend
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "resolveJsonModule": true, // Enable importing JSON files
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "./dist", // Specify output directory for compiled files
+        "rootDir": "./", // Set root directory for the project
+        "incremental": true
+    },
+    "include": [
+        "**/*.ts", // Include all TypeScript files in backend folder
+        "types/**/*.d.ts" // Adjust to your actual types folder if used
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}
