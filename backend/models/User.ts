@@ -43,7 +43,7 @@ export interface IUser extends Document {
 
 const UserSchema = new Schema<IUser>({
   email: { type: String, required: true, unique: true },
-  userId: { type: String, required: true },
+  userId: { type: String },
   position: { type: Number, default: null }, // Allow null for the position if not assigned yet
   isApproved: { type: Boolean, default: false },
   hasProAccess: { type: Boolean, default: false },

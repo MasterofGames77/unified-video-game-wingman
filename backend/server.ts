@@ -12,7 +12,7 @@ import connectToMongoDB from './utils/mongodb';
 
 dotenv.config();
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const expressApp = express();
 
 // Set up CORS
@@ -47,9 +47,9 @@ expressApp.use((req: Request, res: Response, next: NextFunction) => {
 
 // Express routes for backend API
 expressApp.use('/api/auth', authRoutes);
-expressApp.use('/api', waitlistRoutes);
-expressApp.use('/api', getWaitlistPositionRoute);
-expressApp.use('/api', approveUserRoute);
+expressApp.use('/api/waitlist', waitlistRoutes);
+expressApp.use('/api/position', getWaitlistPositionRoute);
+expressApp.use('/api/approveUser', approveUserRoute);
 
 // Global error handling middleware
 expressApp.use((err: any, req: Request, res: Response, next: NextFunction) => {

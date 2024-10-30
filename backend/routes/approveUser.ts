@@ -7,8 +7,8 @@ const router = Router();
 router.post('/approveUser', async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId } = req.body;
-
     const user = await User.findById(userId);
+
     if (!user) {
       res.status(404).json({ message: 'User not found' });
       return;
@@ -17,6 +17,14 @@ router.post('/approveUser', async (req: Request, res: Response): Promise<void> =
     // Approve the user and remove them from the waitlist
     user.position = null;
     user.isApproved = true;
+
+    // Grant Pro Access if eligible
+    const currentDate = new Date();
+    const cutoffDate = new Date('2024-12-31T23:59:59');
+    if (user.position && user.position <= 5000 && currentDate <= cutoffDate) {
+      user.hasProAccess = true;
+    }
+
     await user.save();
 
     // Recalculate positions for remaining users on the waitlist
