@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import assistantHandler from './routes/assistant';
 import { createServer } from 'http';
 import { initSocket } from './middleware/realtime';
 import authRoutes from './routes/auth';
@@ -50,6 +50,9 @@ expressApp.use('/api/auth', authRoutes);
 expressApp.use('/api/waitlist', waitlistRoutes);
 expressApp.use('/api/position', getWaitlistPositionRoute);
 expressApp.use('/api/approveUser', approveUserRoute);
+
+// Route for the assistant API
+expressApp.post('/api/assistant', assistantHandler);
 
 // Global error handling middleware
 expressApp.use((err: any, req: Request, res: Response, next: NextFunction) => {
