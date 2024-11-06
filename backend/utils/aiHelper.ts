@@ -5,6 +5,8 @@ import { getClientCredentialsAccessToken } from './twitchAuth';
 
 // Load environment variables from .env
 dotenv.config();
+console.log("Client ID:", process.env.TWITCH_CLIENT_ID);
+console.log("RAWG API Key:", process.env.RAWG_API_KEY);
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -17,34 +19,56 @@ function cleanAndMatchTitle(queryTitle: string, recordTitle: string): boolean {
     return cleanQuery === cleanRecord; // Simple exact match
 }
 
-  async function fetchFromIGDB(gameTitle: string): Promise<string | null> {
-    try {
-      const accessToken = await getClientCredentialsAccessToken();
-      const response = await axios.post(
-        'https://api.igdb.com/v4/games',
-        `fields name,release_dates.date,platforms.name,developers.name,publishers.name; where name ~ "${gameTitle}";`,
-        {
-          headers: {
-            'Client-ID': process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID as string,
-            'Authorization': `Bearer ${accessToken}`,
-          },
-        }
-      );
-  
-      if (response.data.length > 0) {
-        const game = response.data.find((g: any) => cleanAndMatchTitle(gameTitle, g.name));
-        if (game) {
-          return `${game.name} was released on ${new Date(game.release_dates[0].date * 1000).toLocaleDateString()}, developed by ${game.developers?.map((d: any) => d.name).join(", ") || "unknown developers"} and published by ${game.publishers?.map((p: any) => p.name).join(", ") || "unknown publishers"}, available on ${game.platforms?.map((p: any) => p.name).join(", ") || "unknown platforms"}.`;
-        }
+export async function fetchFromIGDB(gameTitle: string): Promise<string | null> {
+  try {
+    const accessToken = await getClientCredentialsAccessToken();
+
+    // Using ~ for partial matching in the IGDB query
+    const query = `
+      fields name, release_dates.date, platforms.name, developers.name, publishers.name;
+      where name ~ "${gameTitle}";
+    `;
+
+    console.log("IGDB Query:", query); // Log query for debugging
+    console.log("Headers:", {
+      'Client-ID': process.env.TWITCH_CLIENT_ID,
+      'Authorization': `Bearer ${accessToken}`,
+    });
+
+    const response = await axios.post(
+      'https://api.igdb.com/v4/games',
+      query,
+      {
+        headers: {
+          'Client-ID': process.env.TWITCH_CLIENT_ID as string,
+          'Authorization': `Bearer ${accessToken}`,
+        },
       }
-      return null;
-    } catch (error) {
-      console.error("Error fetching data from IGDB:", error);
-      return null;
+    );
+
+    if (response.data.length > 0) {
+      // Find the most relevant match based on title matching
+      const game = response.data.find((g: any) => cleanAndMatchTitle(gameTitle, g.name));
+      if (game) {
+        const releaseDate = game.release_dates?.[0]?.date
+          ? new Date(game.release_dates[0].date * 1000).toLocaleDateString()
+          : "unknown release date";
+        const developers = game.developers?.map((d: any) => d.name).join(", ") || "unknown developers";
+        const publishers = game.publishers?.map((p: any) => p.name).join(", ") || "unknown publishers";
+        const platforms = game.platforms?.map((p: any) => p.name).join(", ") || "unknown platforms";
+
+        return `${game.name} was released on ${releaseDate}, developed by ${developers} and published by ${publishers}, available on ${platforms}.`;
+      }
     }
+
+    return `No information found for the game title "${gameTitle}".`;
+  } catch (error) {
+    console.error("Error fetching data from IGDB:", error);
+    return "Error fetching game information from IGDB.";
+  }
 }
 
-async function fetchFromRAWG(gameTitle: string): Promise<string | null> {
+export async function fetchFromRAWG(gameTitle: string): Promise<string | null> {
     try {
       const url = `https://api.rawg.io/api/games?key=${process.env.RAWG_API_KEY}&search=${encodeURIComponent(gameTitle)}`;
       const response = await axios.get(url);
@@ -70,7 +94,7 @@ async function fetchSeriesFromIGDB(seriesTitle: string): Promise<any[] | null> {
         `fields name, release_dates.date, platforms.name; where series.name ~ "${seriesTitle}";`,
         {
           headers: {
-            'Client-ID': process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID as string,
+            'Client-ID': process.env.TWITCH_CLIENT_ID as string,
             'Authorization': `Bearer ${accessToken}`,
           },
         }
@@ -82,15 +106,15 @@ async function fetchSeriesFromIGDB(seriesTitle: string): Promise<any[] | null> {
     }
   }
   
-  async function fetchSeriesFromRAWG(seriesTitle: string): Promise<any[] | null> {
-    try {
-      const url = `https://api.rawg.io/api/games?key=${process.env.RAWG_API_KEY}&search=${encodeURIComponent(seriesTitle)}`;
-      const response = await axios.get(url);
-      return response.data.results || null;
-    } catch (error) {
-      console.error("Error fetching series data from RAWG:", error);
-      return null;
-    }
+async function fetchSeriesFromRAWG(seriesTitle: string): Promise<any[] | null> {
+  try {
+    const url = `https://api.rawg.io/api/games?key=${process.env.RAWG_API_KEY}&search=${encodeURIComponent(seriesTitle)}`;
+    const response = await axios.get(url);
+    return response.data.results || null;
+  } catch (error) {
+    console.error("Error fetching series data from RAWG:", error);
+    return null;
+  }
 }
 
 export const getChatCompletion = async (question: string): Promise<string | null> => {
