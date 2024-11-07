@@ -57,8 +57,8 @@ const SplashPage: React.FC = () => {
         alt="Video Game Wingman Logo"
         width={300}
         height={300}
-        style={{ maxWidth: "100%", height: "auto", marginTop: "20px" }}
-        priority
+        priority // Adding priority for LCP optimization
+        style={{ maxWidth: "100%", height: "auto", marginTop: "30px" }}
       />
       <h1>Taking Video Games To Their Greatest Heights!</h1>
       <form onSubmit={handleSignUp} className="auth-form">
@@ -74,14 +74,17 @@ const SplashPage: React.FC = () => {
         </button>
       </form>
       <ul className="bullet-points">
-        <li>Incredible Video Game Guides (Upload an image for assistance)</li>
+        <li>
+          Incredible Video Game Guides (Simply upload an image of where you need
+          help)
+        </li>
         <li>Amazing Video Game Recommendations</li>
         <li>Discover Hidden Secrets</li>
-        <li>Outstanding Tips and Tricks</li>
+        <li>Outstanding Video Game Tips and Tricks</li>
       </ul>
       <p className="quote">
-        First 5,000 Users to sign up before December 31st get Wingman Pro free
-        for 1 year!
+        First 5,000 Users to sign up before December 31st get access to Wingman
+        Pro 1 year for free!
       </p>
       <div className="pro-features-section">
         <h4>Wingman Pro Features:</h4>
