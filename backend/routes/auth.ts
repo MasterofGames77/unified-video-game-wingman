@@ -29,22 +29,27 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       if (existingUser.isApproved) {
+        // Respond with the assistant link if the user is approved
         res.status(200).json({
           message: 'You have already signed up and are approved.',
           link: 'https://video-game-wingman-57d61bef9e61.herokuapp.com/',
         });
         return;
       }
+      // Respond with the waitlist position if the user is on the waitlist but not yet approved
       res.status(200).json({
         message: `You have already signed up and are on the waitlist. Your current waitlist position is ${existingUser.position}.`,
+        position: existingUser.position,
       });
       return;
     }
 
+    // Calculate the new user's position in the waitlist
     const position = await User.countDocuments() + 1;
     const newUser = new User({ email, position, isApproved: false });
     await newUser.save();
 
+    // Include a bonus message if the user is within the first 5,000 signups
     const bonusMessage = position <= 5000
       ? `You are the ${getOrdinalSuffix(position)} of the first 5,000 users to sign up! You will receive 1 year of Wingman Pro for free!`
       : '';
