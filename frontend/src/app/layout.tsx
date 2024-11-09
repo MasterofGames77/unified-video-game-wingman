@@ -1,5 +1,6 @@
+// layout.tsx
 import React from "react";
-import "./globals.css"; // Import your global CSS here
+import CSSLoader from "./CSSLoader"; // Import CSSLoader
 import { AuthProvider } from "../context/authContext"; // Adjust the path if necessary
 
 export const metadata = {
@@ -15,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <CSSLoader /> {/* Load CSS conditionally based on the route */}
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

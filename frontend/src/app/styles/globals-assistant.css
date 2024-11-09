@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.response-box {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #09f;
+  animation: spin 1s ease infinite;
+}
+
+.error-message {
+  color: #ff0000;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 0;
+  z-index: 10;
+}
+
+.dropdown-item {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #f0f0f0;
+}
+
+.text-white {
+  color: white;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.flex-1 {
+  margin-top: 30px; /* Adjust for proper spacing */
+}
+
+/* Adjustments to ensure the sidebar is on the side and logo is centered */
+.sidebar {
+  flex-basis: 250px; /* Control width of sidebar */
+  min-width: 250px;
+  max-width: 250px;
+  background-color: #1e1e1e; /* Dark background for sidebar */
+  color: white; /* Make sidebar text white for better contrast */
+}
+
+.sidebar h2,
+.sidebar div {
+  color: white; /* Ensure headings and text are white */
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Move elements to the top */
+  padding: 10px; /* Reduce padding to move content higher */
+  min-height: 80vh; /* Make sure the main content occupies at least 80% of the page height */
+}
+
+.logo {
+  margin-bottom: 20px; /* Reduce space below the logo */
+  margin-top: 10px; /* Add some margin at the top */
+}
+
+ul {
+  margin-top: 10px; /* Reduce space above the list */
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+ul li {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #1e1e1e;
+}
+
+/* Footer buttons */
+.footer-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto; /* Push the buttons to the bottom */
+  margin-bottom: 20px; /* Add spacing from the bottom */
+  position: relative; /* Ensure the buttons scroll into view */
+}
+
+.button {
+  margin: 10px 0; /* Add some space between the buttons */
+}

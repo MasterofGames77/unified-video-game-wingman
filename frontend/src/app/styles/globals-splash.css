@@ -1,0 +1,189 @@
+/* Base Styles */
+body {
+  margin: 0;
+  font-family: "Poppins", Arial, sans-serif;
+  background-color: #1a1a2e;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #e94560;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 2s linear infinite;
+  margin: 10px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Container */
+.home-container {
+  max-width: 700px;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Logo */
+.home-container img {
+  max-width: 50%;
+  height: auto;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+/* Headings */
+h1 {
+  font-size: 1rem;
+  margin: 8px 0;
+}
+
+/* Forms */
+.auth-form {
+  margin-top: 5px;
+  margin-bottom: 15px; /* Increased bottom margin for more space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-form input {
+  width: calc(100% - 120px);
+  padding: 6px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+.auth-form button {
+  padding: 6px 15px;
+  font-size: 0.9rem;
+  color: #ffffff;
+  background-color: #e94560;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 5px;
+}
+
+.auth-form button:hover {
+  background-color: #d63050;
+}
+
+/* Bullet Points */
+.bullet-points,
+.bullet-points-2 {
+  list-style-type: disc;
+  text-align: left;
+  margin: 4px auto;
+  padding-left: 20px;
+  max-width: 600px;
+}
+
+.bullet-points li,
+.bullet-points-2 li {
+  font-size: 0.9rem;
+  margin-bottom: 3px;
+  margin-left: 5px;
+  text-indent: -5px;
+}
+
+/* Quote and Feature Heading */
+.quote {
+  font-size: 0.9rem;
+  margin-top: 5px;
+  color: #a7a9be;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+/* Pro Features Section */
+.pro-features-section {
+  text-align: center;
+  margin-top: 5px;
+  padding-bottom: 10px;
+}
+
+.pro-features-section h4 {
+  margin-bottom: 5px;
+  font-size: 1rem;
+}
+
+.pro-features-section .bullet-points-2 {
+  list-style-type: disc;
+  text-align: left;
+  padding-left: 20px;
+  max-width: 600px;
+}
+
+/* Additional Info */
+.additional-info {
+  font-size: 0.9rem;
+  color: #a7a9be;
+  line-height: 1.2;
+}
+
+/* Links */
+a {
+  color: #e94560;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .home-container {
+    padding: 5px;
+  }
+
+  .home-container img {
+    max-width: 40%;
+  }
+
+  h1 {
+    font-size: 0.95rem;
+  }
+
+  .auth-form input {
+    width: 100%;
+  }
+
+  .bullet-points,
+  .bullet-points-2 {
+    max-width: 100%;
+    padding-left: 15px;
+  }
+
+  .quote,
+  .additional-info {
+    font-size: 0.9rem;
+    padding: 0 5px;
+    white-space: normal;
+  }
+}
