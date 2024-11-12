@@ -20,7 +20,7 @@ import { readCSVFile } from '../utils/csvHelper';
 
 const CSV_FILE_PATH = path.join(__dirname, '../data/Video Games Data.csv');
 
-// Function to fetch game data from the CSV file
+// Fetch game data from the CSV file
 const getGameInfoFromCSV = async (gameTitle: string): Promise<string | null> => {
   try {
     const gameData = await readCSVFile(CSV_FILE_PATH);
@@ -37,7 +37,7 @@ const getGameInfoFromCSV = async (gameTitle: string): Promise<string | null> => 
   }
 };
 
-// Function to fetch and combine game data from various sources
+// Fetch and combine game data from various sources
 const fetchAndCombineGameData = async (question: string, answer: string): Promise<string> => {
   const gameName = question.replace(/when (was|did) (.*?) (released|come out)/i, "$2").trim();
 
@@ -58,7 +58,10 @@ const fetchAndCombineGameData = async (question: string, answer: string): Promis
 
 // Main assistant handler
 const assistantHandler = async (req: Request, res: Response) => {
+  console.log("Received request body:", req.body);
   const { userId, question, code } = req.body;
+
+  console.log("Received userId:", userId);
 
   try {
     console.log("Received question:", question);
@@ -66,13 +69,11 @@ const assistantHandler = async (req: Request, res: Response) => {
 
     let answer: string | null = null;
 
-    // Handle CSV-based game information questions
     if (question.toLowerCase().includes("information on")) {
       const gameTitle = question.replace(/information on/i, "").trim();
       answer = await getGameInfoFromCSV(gameTitle);
       answer = answer || `I'm sorry, I couldn't find information on ${gameTitle} in our database.`;
     }
-    // Handle recommendation questions
     else if (question.toLowerCase().includes("recommendations")) {
       const previousQuestions = await Question.find({ userId });
       const genres = analyzeUserQuestions(previousQuestions);
@@ -82,30 +83,31 @@ const assistantHandler = async (req: Request, res: Response) => {
         ? `Based on your preferences, I recommend these games: ${recommendations.join(', ')}.` 
         : "I couldn't find any recommendations based on your preferences.";
     }
-    // Handle release date questions
     else if (question.toLowerCase().includes("when was") || question.toLowerCase().includes("when did")) {
       answer = await getChatCompletion(question);
       answer = answer ? await fetchAndCombineGameData(question, answer) : "I'm sorry, I couldn't generate a response. Please try again.";
     }
-    // Handle Twitch user data request
+    // Twitch user data request handling with environment-based URL for redirect
     else if (question.toLowerCase().includes("twitch user data")) {
       if (!code) {
-        redirectToTwitch(res);
+        // Modify redirect URL for local testing if needed
+        const baseUrl = process.env.NODE_ENV === 'development' 
+          ? 'http://localhost:3000' 
+          : 'https://video-game-wingman-57d61bef9e61.herokuapp.com';
+        redirectToTwitch(res, baseUrl);
         return;
       }
       const accessToken = await getAccessToken(code);
       const userData = await getTwitchUserData(accessToken);
       answer = `Twitch User Data: ${JSON.stringify(userData)}`;
     }
-    // Default to using OpenAI completion for other questions
     else {
       answer = await getChatCompletion(question);
       answer = answer ? await fetchAndCombineGameData(question, answer) : "I'm sorry, I couldn't generate a response. Please try again.";
     }
 
-    // Save the question and response in MongoDB
     await Question.create({ userId, question, response: answer });
-    await User.findOneAndUpdate({ _id: userId }, { $inc: { conversationCount: 1 } });
+    await User.findOneAndUpdate({ userId }, { $inc: { conversationCount: 1 } });
 
     res.status(200).json({ answer });
   } catch (error) {

@@ -4,9 +4,7 @@ import User from '../models/User';
 const router = Router();
 
 const isProduction = process.env.NODE_ENV === 'production';
-const BASE_URL = isProduction
-  ? 'https://vgw-splash-page-frontend-71431835113b.herokuapp.com/'
-  : 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3000';
 
 // Helper function to get the correct ordinal suffix for a position
 function getOrdinalSuffix(position: number): string {
@@ -32,7 +30,7 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
         // Respond with the assistant link if the user is approved
         res.status(200).json({
           message: 'You have already signed up and are approved.',
-          link: 'https://video-game-wingman-57d61bef9e61.herokuapp.com/',
+          link: `${BASE_URL}/assistant`,
         });
         return;
       }
