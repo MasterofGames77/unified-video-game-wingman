@@ -98,11 +98,9 @@ function buildTwitchAuthorizationUrl(redirectUri: string): string {
   return `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(cleanUri)}&scope=${encodeURIComponent(scope)}`;
 }
 
-export const redirectToTwitch = (res: Response) => {
-  const redirectUri = (process.env.TWITCH_REDIRECT_URI || '').replace(/\/$/, '').replace(/([^:]\/)\/+/g, "$1");
+export const redirectToTwitch = (res: Response, baseUrl: string) => {
+  const redirectUri = `${baseUrl}/api/twitchCallback`;
+  const twitchAuthUrl = `${process.env.TWITCH_AUTH_URL}?client_id=${process.env.TWITCH_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=${process.env.TWITCH_SCOPES}`;
 
-  console.log('Redirecting to Twitch authorization URL...');
-  const authorizationUrl = buildTwitchAuthorizationUrl(redirectUri);
-
-  res.redirect(authorizationUrl);
+  res.redirect(twitchAuthUrl);
 };
