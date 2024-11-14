@@ -9,13 +9,15 @@ const Sidebar = ({
   onDeleteConversation,
 }: SideBarProps) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   // Fetch conversations from the backend when component mounts or userId changes
   useEffect(() => {
     const fetchConversations = async () => {
       try {
         const res = await axios.get(
-          `/api/assistant/getConversation?userId=${userId}`
+          `${API_BASE_URL}/api/assistant/getConversation?userId=${userId}`
         );
         setConversations(res.data);
       } catch (error) {
@@ -26,7 +28,7 @@ const Sidebar = ({
     if (userId) {
       fetchConversations();
     }
-  }, [userId]);
+  }, [userId, API_BASE_URL]);
 
   // Helper function to shorten question text for display
   const shortenQuestion = (question: string): string => {
@@ -37,7 +39,9 @@ const Sidebar = ({
   // Handle deletion of a conversation
   const handleDelete = async (id: string) => {
     try {
-      await axios.post(`/api/assistant/deleteInteraction`, { id });
+      await axios.post(`${API_BASE_URL}/api/assistant/deleteInteraction`, {
+        id,
+      });
       // Update local state to reflect deleted conversation
       setConversations(conversations.filter((convo) => convo._id !== id));
 

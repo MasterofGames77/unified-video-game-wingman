@@ -6,7 +6,7 @@ import Sidebar from "../../components/Sidebar";
 import Image from "next/image";
 import { Conversation } from "../../../types";
 import { v4 as uuidv4 } from "uuid";
-import "../styles/globals-assistant.css";
+import "../styles/assistant.css";
 
 export default function AssistantPage() {
   const [question, setQuestion] = useState("");
@@ -15,6 +15,8 @@ export default function AssistantPage() {
   const [error, setError] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     let storedUserId = localStorage.getItem("userId");
@@ -29,7 +31,9 @@ export default function AssistantPage() {
     if (!userId) return;
 
     try {
-      const res = await axios.get(`/api/getConversation?userId=${userId}`);
+      const res = await axios.get(
+        `${API_BASE_URL}/api/assistant/getConversation?userId=${userId}`
+      );
       setConversations(res.data);
     } catch (error) {
       console.error("Error fetching conversations:", error);
@@ -46,7 +50,10 @@ export default function AssistantPage() {
     setError("");
 
     try {
-      const res = await axios.post("/api/assistant", { userId, question });
+      const res = await axios.post(`${API_BASE_URL}/api/assistant`, {
+        userId,
+        question,
+      });
       setResponse(res.data.answer);
       fetchConversations(); // Refresh conversation list after submitting a new question
     } catch (error) {
@@ -70,7 +77,7 @@ export default function AssistantPage() {
 
   const handleDeleteConversation = async (id: string) => {
     try {
-      await axios.post(`/api/deleteInteraction`, { id });
+      await axios.post(`${API_BASE_URL}/api/deleteInteraction`, { id });
       setConversations(conversations.filter((convo) => convo._id !== id));
     } catch (error) {
       console.error("Error deleting conversation:", error);
@@ -83,16 +90,18 @@ export default function AssistantPage() {
         <Sidebar
           userId={userId}
           onSelectConversation={handleSelectConversation}
-          onDeleteConversation={handleDeleteConversation} // Pass function here directly
+          onDeleteConversation={handleDeleteConversation}
         />
       )}
       <div className="main-content">
         <Image
-          src="/assets/video-game-wingman-logo.png"
+          src="/video-game-wingman-logo.png"
           alt="Video Game Wingman Logo"
-          width={250}
-          height={250}
+          width={300}
+          height={300}
           className="logo"
+          style={{ width: "auto", height: "auto" }} // Maintain aspect ratio
+          priority
         />
 
         <form onSubmit={handleSubmit} className="question-form">
@@ -100,7 +109,7 @@ export default function AssistantPage() {
             type="text"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Ask Video Game Wingman..."
+            placeholder="Message Video Game Wingman..."
             required
             className="question-input"
           />

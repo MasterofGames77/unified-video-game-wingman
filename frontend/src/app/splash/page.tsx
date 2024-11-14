@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import "../styles/globals-splash.css";
+import "../styles/splash.css";
 
 interface SignUpResponse {
   message: string;

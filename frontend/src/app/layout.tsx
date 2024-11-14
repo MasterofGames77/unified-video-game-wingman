@@ -1,7 +1,6 @@
-// layout.tsx
 import React from "react";
-import CSSLoader from "./CSSLoader"; // Import CSSLoader
-import { AuthProvider } from "../context/authContext"; // Adjust the path if necessary
+import CSSLoader from "./CSSLoader";
+import { AuthProvider } from "../context/authContext";
 
 export const metadata = {
   title: "Video Game Wingman",
@@ -17,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AuthProvider>
-          <CSSLoader /> {/* Load CSS conditionally based on the route */}
+          <CSSLoader /> {/* Dynamically load CSS based on route */}
           {children}
         </AuthProvider>
       </body>
